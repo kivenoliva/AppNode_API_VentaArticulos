@@ -15,7 +15,7 @@ var async = require("async");
 //Lo primero borro lo que haya en la base de datos
 Anuncio.remove({}, function(err) {
     if (err) {
-        return console.error("ERROR AL ELIMINAR ANUNCIOS") 
+        return console.error("ERROR AL ELIMINAR ANUNCIOS"); 
     }
     console.log("ELIMINADO ANUNCIOS");
     // Leo el fichero anuncios.json para inicializar la base de datos
@@ -54,7 +54,7 @@ Anuncio.remove({}, function(err) {
 
 Usuario.remove({}, function(err) {
     if (err) {
-        return console.error("ERROR AL ELIMINAR USUARIOS") 
+        return console.error("ERROR AL ELIMINAR USUARIOS"); 
     }
     console.log("ELIMINADO USUARIOS");
     // Leo el fichero usuarios.json para inicializar la base de datos

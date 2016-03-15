@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 var Anuncio = mongoose.model("Anuncio");
 var Usuario = mongoose.model("Usuario");
 
-/* GET home page. */
+/*
+/* GET home page. 
 router.post('/', function(req, res, next) {
 
 	var new_anuncio = new Usuario(req.body);
@@ -18,6 +19,11 @@ router.post('/', function(req, res, next) {
     	res.json({result:true, row: newRow});
     });
   	//res.render('index', { data: 'Express' });
+});
+*/
+
+router.get('/', function(req, res, next) {
+  res.send('NODEPOP');
 });
 
 module.exports = router;
