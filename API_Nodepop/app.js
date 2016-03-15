@@ -18,7 +18,9 @@ require("./models/usuarios_models");
 //Rutas de web
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var tags = require("./routes/tags");
 var anuncios = require("./routes/anuncios");
+
 
 
 
@@ -40,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);   
+app.use("/tags", tags);
 app.use("/anuncios", anuncios);
 
 // catch 404 and forward to error handler
