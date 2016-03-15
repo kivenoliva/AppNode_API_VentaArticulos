@@ -3,11 +3,15 @@ var router = express.Router();
 var mongoose = require('mongoose');
 //require("./models/anuncios_models");
 var Anuncio = mongoose.model("Anuncio");
+var auth = require("../lib/auth");
 
 /* Cuando me piden el recurso /anuncios, devuelvo una lista con todos los anuncios,
 pueden meterme filtros para listar los anuncios, lo que hago es comprobar si me meten
 alguno o no de esos filtros para filtrar la búsqueda en MongoDB. Según los criterios
 de los filtros que viene explicado en el enunciado del proyecto*/
+
+router.use(auth()); 
+
 router.get('/', function(req, res, next) {
 	
 	obj_filtro = {};
