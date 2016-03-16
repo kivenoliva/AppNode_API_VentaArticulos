@@ -5,7 +5,6 @@ var Usuario = mongoose.model("Usuario");
 var sha256 = require("sha256");
 
 
-
 function nombreUnico (nombre, callback){
 
 	var query = Usuario.find({nombre: nombre});
@@ -27,20 +26,66 @@ function nombreUnico (nombre, callback){
 };
 
 function emailValido (email){
-
 	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email)){
 		return true;
 	} else {
 		return false;
 	}
-	
 };
 
+function unSoloUser (reqbody){
+
+	if (reqbody.nombre instanceof Array){
+		return [false, {result: false, err: "Has metido dos nombres, sólo puedes meter un usuario a la vez"}];
+	}
+
+	if (reqbody.email instanceof Array){
+		return [false, {result: false, err: "Has metido dos email, sólo puedes meter un usuario a la vez"}];
+	}
+
+	if (reqbody.clave instanceof Array){
+		return [false, {result: false, err: "Has metido dos claves, sólo puedes meter un usuario a la vez"}];
+	}
+
+	return[true, ""];
+};
+
+function camposNoVacios (reqbody){
+
+	if (reqbody.nombre === ""){
+		return [false, {result: false, err: "El campo de nombre no puede ir vacío"}];
+	}
+
+	if (reqbody.email === ""){
+		return [false, {result: false, err: "El campo de email no puede ir vacío"}];
+	}
+
+	if (reqbody.clave === ""){
+		return [false, {result: false, err: "El campo de clave no puede ir vacío"}];
+	}
+
+	return[true, ""];
+};
+
+function camposObligatorios (reqbody){
+
+	if (reqbody.nombre === undefined){
+		return [false, {result: false, err: "Debe ir un campo nombre obligatorio"}];
+	}
+
+	if (reqbody.email === undefined){
+		return [false, {result: false, err: "Debe ir un campo email obligatorio"}];
+	}
+
+	if (reqbody.clave === undefined){
+		return [false, {result: false, err: "Debe ir un campo clave obligatorio"}];
+	}
+
+	return[true, ""];
+}
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-
-	console.log(sha256("araujo"));
 
 	var query = Usuario.find({});
 	query.exec(function(err, rows){
@@ -58,10 +103,27 @@ router.post("/", function(req, res, next) {
 	var nombreOK = "";
 	var emailOK = "";
 
-	//Recojo los datos que me da el POST, y los primero hasheo la contraseña
-	clave_hash = sha256(req.body.clave);
+	/*Compruebo que vienen los 3 campos obligatorios*/
+	if (!camposObligatorios(req.body)[0]){
+		res.json(camposObligatorios(req.body)[1]);
+		return;
+	}
 
-	//Hago la validación del registro comprobando usuario único y el email.
+	/*Compruebo que ningun campo de los 3 obligatorios me lo pasan vacios*/
+	if (!camposNoVacios(req.body)[0]){
+		res.json(camposNoVacios(req.body)[1]);
+		return;
+	}
+
+	//compruebo que sólo me meten un usuario a la vez
+	if (!unSoloUser(req.body)[0]){
+		res.json(unSoloUser(req.body)[1]);
+		return;
+	}
+
+
+	/*Compruebo ahora que el nombre de usuario no está cogido y si está libre,
+	compruebo el formato de su email*/
 	nombreUnico(req.body.nombre, function(error, result){
 		if(error){
 			res.json({result: false, err: err});
@@ -78,6 +140,9 @@ router.post("/", function(req, res, next) {
 			res.json({result: false, err: "El formato del email no es correcto"});
 			return;
 		}
+
+		//hasheo la contraseña
+		clave_hash = sha256(req.body.clave);
 
 		//Instanciamos objeto en memoria, SOLO en memoria
 	  	var objUsuario = {
