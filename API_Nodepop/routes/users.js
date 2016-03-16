@@ -13,7 +13,29 @@ function nombreUnico (nombre, callback){
 			callback(err);
 			return;
 		}
-		console.log(rows);
+		console.log("ROWS", rows);
+		if(rows.length == 0){
+			callback(null, true);
+
+		}else{
+			callback(null, false);
+
+		}
+	});
+
+	
+	//var query = Usuario.find({$or:[{ nombre: body.nombre},{ email: body.email }]});
+};
+
+function emailUnico(email, callback){
+	console.log(email);
+	var query = Usuario.find({email: email});
+	query.exec(function(err, rows){
+		if (err){
+			callback(err);
+			return;
+		}
+		console.log("ROWS", rows);
 		if(rows.length == 0){
 			callback(null, true);
 
@@ -102,6 +124,7 @@ router.get('/', function(req, res, next) {
 router.post("/", function(req, res, next) {
 	var nombreOK = "";
 	var emailOK = "";
+	var emailRepetido = "";
 
 	/*Compruebo que vienen los 3 campos obligatorios*/
 	if (!camposObligatorios(req.body)[0]){
@@ -129,39 +152,55 @@ router.post("/", function(req, res, next) {
 			res.json({result: false, err: err});
 			return;
 		}
+
 		nombreOK = result;
-		emailOK = emailValido(req.body.email);
-
 		if(!nombreOK){
-			res.json({result: false, err: "Nombre de usuario no es correcto, prueba otro"});
-			return;
-		}
-		if(!emailOK){
-			res.json({result: false, err: "El formato del email no es correcto"});
+			res.json({result: false, err: "Ese nombre de usuario ya está en uso, prueba otro"});
 			return;
 		}
 
-		//hasheo la contraseña
-		clave_hash = sha256(req.body.clave);
+		emailUnico(req.body.email, function(error, result){
+			if(error){
+				res.json({result: false, err: err});
+				return;
+			}
 
-		//Instanciamos objeto en memoria, SOLO en memoria
-	  	var objUsuario = {
-	  		nombre: req.body.nombre,
-	  		email: req.body.email,
-	  		clave: clave_hash
-	  	}
+			emailRepetido = result;
+			if(!emailRepetido){
+				res.json({result: false, err: "Ese email ya está en uso, prueba otro"});
+				return;
+			}
 
-		var new_user = new Usuario(objUsuario);
-	    
-	    //Lo guardamos en la base de datos
-	    new_user.save(function(err, newRow){
-	    	if(err){
-	    		res.json({result:false, err:err});
-	    		return;
-	    	}
-	    	res.json({result:true, row: newRow});
-	    });
-			return;
+			emailOK = emailValido(req.body.email);
+
+		
+			if(!emailOK){
+				res.json({result: false, err: "El formato del email no es correcto"});
+				return;
+			}
+
+			//hasheo la contraseña
+			clave_hash = sha256(req.body.clave);
+
+			//Instanciamos objeto en memoria, SOLO en memoria
+		  	var objUsuario = {
+		  		nombre: req.body.nombre,
+		  		email: req.body.email,
+		  		clave: clave_hash
+		  	}
+
+			var new_user = new Usuario(objUsuario);
+		    
+		    //Lo guardamos en la base de datos
+		    new_user.save(function(err, newRow){
+		    	if(err){
+		    		res.json({result:false, err:err});
+		    		return;
+		    	}
+		    	res.json({result:true, row: newRow});
+		    	return;
+		    });
+		});
 	});
 });
 
