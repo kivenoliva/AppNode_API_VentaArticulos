@@ -15,12 +15,12 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-let cluster = require("cluster");
+var cluster = require("cluster");
 
 if(cluster.isMaster){
   //forkeo
-  let numCPUs = require("os").cpus().length;
-  for (let i = 0; i < numCPUs; i++){
+  var numCPUs = require("os").cpus().length;
+  for (var i = 0; i < numCPUs; i++){
     cluster.fork();
   }
 
