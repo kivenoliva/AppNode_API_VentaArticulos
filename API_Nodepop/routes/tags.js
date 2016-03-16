@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Anuncio = mongoose.model("Anuncio");
 
 
-
+/*Tengo que mostrar una lista con todos los tags existentes*/
 router.get('/', function(req, res, next) {
 
 	var tagsExistentes = [];

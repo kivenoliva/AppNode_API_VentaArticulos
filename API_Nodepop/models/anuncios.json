@@ -20,6 +20,6 @@
 			"precio": 2000,
 			"foto": "moto.jpg",
 			"tags": [ "lifestyle", "motor"]
-		},
+		}
 	]
 }

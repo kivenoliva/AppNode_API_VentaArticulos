@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Usuario = mongoose.model("Usuario");
 var sha256 = require("sha256");
 
-
+/*Funcion que comprueba si el nombre ya está guardado en la base de datos*/
 function nombreUnico (nombre, callback){
 
 	var query = Usuario.find({nombre: nombre});
@@ -22,11 +22,9 @@ function nombreUnico (nombre, callback){
 
 		}
 	});
-
-	
-	//var query = Usuario.find({$or:[{ nombre: body.nombre},{ email: body.email }]});
 };
 
+/*Función que comprueba si el email ya está guardado en la base de datos*/
 function emailUnico(email, callback){
 	console.log(email);
 	var query = Usuario.find({email: email});
@@ -47,6 +45,7 @@ function emailUnico(email, callback){
 
 };
 
+/*Función que comprueba si el formato del email introducido es correcto*/
 function emailValido (email){
 	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email)){
 		return true;
@@ -55,6 +54,7 @@ function emailValido (email){
 	}
 };
 
+/*Función que comprueba si me meten los usuarios de uno en uno*/
 function unSoloUser (reqbody){
 
 	if (reqbody.nombre instanceof Array){
@@ -72,6 +72,7 @@ function unSoloUser (reqbody){
 	return[true, ""];
 };
 
+/*Función que comprueba si los campos obligatorios me los meten vacíos*/
 function camposNoVacios (reqbody){
 
 	if (reqbody.nombre === ""){
@@ -89,6 +90,7 @@ function camposNoVacios (reqbody){
 	return[true, ""];
 };
 
+/*Función que comprueba si como mínimo me meten los 3 campos obligatorios*/
 function camposObligatorios (reqbody){
 
 	if (reqbody.nombre === undefined){
@@ -146,7 +148,7 @@ router.post("/", function(req, res, next) {
 
 
 	/*Compruebo ahora que el nombre de usuario no está cogido y si está libre,
-	compruebo el formato de su email*/
+	compruebo el email*/
 	nombreUnico(req.body.nombre, function(error, result){
 		if(error){
 			res.json({result: false, err: err});
@@ -159,6 +161,8 @@ router.post("/", function(req, res, next) {
 			return;
 		}
 
+		/*Compruebo ahora que el email de usuario no está cogido y si está libre,
+		compruebo el formato del email*/
 		emailUnico(req.body.email, function(error, result){
 			if(error){
 				res.json({result: false, err: err});

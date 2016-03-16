@@ -25,7 +25,6 @@ Anuncio.remove({}, function(err) {
 			return;
 		}
 
-		//console.log(data);
 		var data = JSON.parse(data);
 
 		//Aqui tengo el fichero leído, ahora guardo lo obtenido
