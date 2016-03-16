@@ -21,26 +21,5 @@
 			"foto": "moto.jpg",
 			"tags": [ "lifestyle", "motor"]
 		},
-		{
-			"nombre": "Tele",
-			"venta": false,
-			"precio": 300,
-			"foto": "tele.png",
-			"tags": [ "lifestyle", "mobile"]
-		},
-		{
-			"nombre": "coche",
-			"venta": true,
-			"precio": 12000,
-			"foto": "coche.jpg",
-			"tags": [ "lifestyle", "motor"]
-		},
-		{
-			"nombre": "Armario",
-			"venta": false,
-			"precio": 50.00,
-			"foto": "armario.png",
-			"tags": [ "lifestyle", "mobile"]
-		}
 	]
 }
