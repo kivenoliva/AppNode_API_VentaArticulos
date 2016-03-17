@@ -1,3 +1,100 @@
+/**
+ * @api {get} /users Obtener información de ususarios
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiSuccess {String} id Id del usuario.
+ * @apiSuccess {String} nombre Nombre del usuario.
+ * @apiSuccess {String} email  Email del usuario.
+ * 
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     
+ *		{
+ *			"result": true,
+ *			"rows": [
+ *				{
+ *					"_id": "56ea6973e0b2c1280de9ebd7",
+ *					"nombre": "kevin",
+ *					"email": "kivenoliva@gmail.com"
+ *				}
+ *			]
+ *		}
+ *
+ *
+ *
+ * @apiError UsersNotFound Se ha producido algún error al obtener los usuarios de la base de datos.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     
+ *     {
+ *       "result": false,
+ *       "error": {error}
+ *     }
+ *
+ */
+
+ /**
+ * @api {post} /users Registrar un nuevo usuario
+ * @apiName PostUser
+ * @apiGroup User
+ *
+ * @apiParam (nombre) {String} Nombre Nombre del usuario.
+ * @apiParam (email) {String} Email Email del usuario.
+ * @apiParam (clave) {String} Clave Clave del usuario.
+ *
+ * 
+ *
+ *
+ *
+ * @apiParamExample {url} Param-Example:
+ *     {
+ *       "nombre": "Kevin",
+ *       "email": "kiven@gmail.com",
+ *       "clave": "pass"
+ *     }
+ *
+ * @apiSuccess {String} id Id del usuario.
+ * @apiSuccess {String} nombre Nombre del usuario.
+ * @apiSuccess {String} email  Email del usuario.
+ * @apiSuccess {String} clave  Clave del usuario.
+ * 
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     
+ *		{
+ *			"result": true,
+ *			"rows": [
+ *				{
+ *					"_id": "56ea6973e0b2c1280de9ebd7",
+ *					"nombre": "kevin",
+ *					"email": "kivenoliva@gmail.com",
+ *					"clave": "85f5e10431f69bc2a14046a13aabaefc660103b6de7a84f75c4b96181d03f0b5",
+ *					"__v": 0
+ *				}
+ *			]
+ *		}
+ *
+ *
+ *
+ * @apiError UsersNotSave Se ha producido algún error al guardar un usuario en la base de datos.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     
+ *     {
+ *       "result": false,
+ *       "error": {error}
+ *     }
+ *
+ *
+ */
+
+
+
+
+
+
+
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose'); 

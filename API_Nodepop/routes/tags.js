@@ -1,3 +1,42 @@
+/**
+ * @api {get} /tags Obtener un listado de todos los tags existentes.
+ * @apiName GetTags
+ * @apiGroup Tags
+ *
+ *                              
+ *
+ * @apiSuccess {Tags} Array Array con un listado de todos los tags existentes
+ * 
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     
+ *		{
+ *			"result": true,
+ *			"rows": ["lifestyle", "motor"]
+ *		}
+ *
+ *
+ *
+ * @apiError TagsNotFound Se ha producido algún error al obtener los tags existentes en la app.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     
+ *     {
+ *       "result": false,
+ *       "error": {error}
+ *     }
+ *
+ */
+
+
+
+
+
+
+
+
+
+
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');

@@ -1,14 +1,124 @@
+/**
+ * @api {get} /anuncios Obtener listado de todos los anuncios disponible.
+ * @apiName GetAnuncios
+ * @apiGroup Anuncios
+ *
+ * @apiParam (Login) {String} pass Sólo los usuarios logueados pueden acceder a este GET.
+ *                                
+ *
+ *
+ *
+ * @apiSuccess {String} id Id del producto.
+ * @apiSuccess {String} nombre Nombre del producto anunciado.
+ * @apiSuccess {String} venta  Devuelve true o false indicando si el producto está en venta o no.
+ * @apiSuccess {String} precio  Precio que tiene el producto.
+ * @apiSuccess {String} foto  Url de una imagen del producto.
+ * @apiSuccess {Array} tags  Tags que corresponden a ese producto.
+ * 
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     
+ *		{
+ *			"result": true,
+ *			"rows": [
+ *				{
+ *					"_id": "56ea6973e0b2c1280de9ebd4",
+ *					"nombre": "Bicicleta",
+ *					"venta": true,
+ *					"precio": 230.15,
+ *					"foto": "bici.jpg",
+ *					"__v": 0,
+ *					"tags": [
+ *						"lifestyle",
+ *						"motor"
+ *					]
+ *				}
+ *			]
+ *		}
+ *
+ *
+ *
+ * @apiError AnunciosNotFound Se ha producido algún error al obtener los anuncios de la base de datos.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     
+ *     {
+ *       "result": false,
+ *       "error": {error}
+ *     }
+ *
+ */
+
+
+/**
+ * @api {get} /anuncios Obtener listado de anuncios utilizando distintos filtros.
+ * @apiName GetAnunciosFiltros
+ * @apiGroup Anuncios
+ *
+ * @apiParam (Login) {String} pass Sólo los usuarios logueados pueden acceder a este GET.
+ *
+ * @apiParam {String} [nombre]  Nombre del producto.
+ * @apiParam {String} [tag]  Tag que tenga producto.
+ * @apiParam {String} [venta]  Venta, true o false, para ver si está en venta el producto.
+ * @apiParam {String} [precio]  Precio del producto. (50, -50, 50-, 50-1000).
+ * @apiParam {String} [start]  Para paginación, mostrara anuncios a partir del número indicado.
+ * @apiParam {String} [limit]  Para paginación, mostrará como máximo el número de anuncios indicado.
+ * @apiParam {String} [sort]  Para ordenación, mostrará el listado de anuncios ordenado por el parámetro indicado.
+ *
+ *
+ * @apiParamExample {url} Request-Example:
+ *     /anuncios?tag=mobile&venta=false&nombre=ip&precio=50&start=0&limit=2&sort=precio
+ *
+ * @apiSuccess {String} id Id del producto.
+ * @apiSuccess {String} nombre Nombre del producto anunciado.
+ * @apiSuccess {String} venta  Devuelve true o false indicando si el producto está en venta o no.
+ * @apiSuccess {String} precio  Precio que tiene el producto.
+ * @apiSuccess {String} foto  Url de una imagen del producto.
+ * @apiSuccess {String} tags  Tags que corresponden a ese producto.
+ * 
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     
+ *		{
+ *			"result": true,
+ *			"rows": [
+ *				{
+ *					"_id": "56ea6973e0b2c1280de9ebd4",
+ *					"nombre": "Bicicleta",
+ *					"venta": true,
+ *					"precio": 230.15,
+ *					"foto": "bici.jpg",
+ *					"__v": 0,
+ *					"tags": [
+ *						"lifestyle",
+ *						"motor"
+ *					]
+ *				}
+ *			]
+ *		}
+ *
+ *
+ *
+ * @apiError AnunciosNotFound Se ha producido algún error al obtener los anuncios de la base de datos.
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     
+ *     {
+ *       "result": false,
+ *       "error": {error}
+ *     }
+ *
+ */
+
+
+
+
+
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-//require("./models/anuncios_models");
 var Anuncio = mongoose.model("Anuncio");
 var auth = require("../lib/auth");
-
-/* Cuando me piden el recurso /anuncios, devuelvo una lista con todos los anuncios,
-pueden meterme filtros para listar los anuncios, lo que hago es comprobar si me meten
-alguno o no de esos filtros para filtrar la búsqueda en MongoDB. Según los criterios
-de los filtros que viene explicado en el enunciado del proyecto*/
 
 router.use(auth()); 
 

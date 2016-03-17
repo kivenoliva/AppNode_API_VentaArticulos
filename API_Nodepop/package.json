@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "apidoc": {
-    "title": "Nodepop apiDoc",
-    "url" : "https://api.github.com/v1"
+    "title": "Nodepop apiDoc"
   },
   "scripts": {
     "start": "node ./bin/www",
