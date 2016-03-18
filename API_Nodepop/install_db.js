@@ -27,7 +27,7 @@ var deleteAnuncios = function (){
 	});
 };
 
-//Promesa que borra la base de datos de los anuncios.
+//Promesa que borra la base de datos de los usuarios.
 var deleteUsuario = function (){
 
 	return new Promise(function(resolve, reject) {
@@ -43,6 +43,7 @@ var deleteUsuario = function (){
 	});
 };
 
+//Promesa que lee el json donde están los anuncios precargados y recoge los datos
 var leerFicheroAnuncios = function(){
 
 	return new Promise(function(resolve, reject) {
@@ -59,6 +60,7 @@ var leerFicheroAnuncios = function(){
 	});
 };
 
+//Promesa que lee el json donde están los usuarios precargados y recoge los datos
 var leerFicheroUsuarios = function(){
 
 	return new Promise(function(resolve, reject) {
@@ -75,6 +77,7 @@ var leerFicheroUsuarios = function(){
 	});
 };
 	
+// Promesa que guarda en la base de datos los anuncios leídos del json
 var saveAnuncios = function(data){
 	
 	return new Promise(function(resolve, reject) {
@@ -84,12 +87,10 @@ var saveAnuncios = function(data){
 			var new_anuncio = new Anuncio(data);
 			new_anuncio.save(function(err, newRow){
 		    	if(err){
-		    		//res.json({result:false, err:err});
 		    		console.log("ERROR AL GUARDAR ANUNCIO");
 		    		cb();
 		    		return;
 		    	}
-		    	//res.json({result:true, row: newRow});
 		    	console.log("GUARDADO ANUNCIO");
 		    	cb();
 		    });
@@ -112,6 +113,7 @@ var saveAnuncios = function(data){
 
 };
 
+// Promesa que guarda en la base de datos los usuarios leídos del json
 var saveUsuarios = function(data){
 	
 	return new Promise(function(resolve, reject) {
@@ -148,7 +150,7 @@ var saveUsuarios = function(data){
 };
 
 
-
+//Empieza la serie de promesas
 deleteAnuncios()
 	.then(leerFicheroAnuncios)
 	.then(saveAnuncios)
@@ -156,7 +158,7 @@ deleteAnuncios()
 	.then(leerFicheroUsuarios)
 	.then(saveUsuarios)
 	
-	.then( function(resultado) {
+	.then( function() {
 		console.log("FIN");
 		process.exit();
 	})
