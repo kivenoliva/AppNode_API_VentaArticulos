@@ -11,86 +11,158 @@ require("./models/usuarios_models");
 var Usuario = mongoose.model("Usuario");
 var async = require("async");
 
+//Promesa que borra la base de datos de los anuncios.
+var deleteAnuncios = function (){
 
-//Lo primero borro lo que haya en la base de datos
-Anuncio.remove({}, function(err) {
-    if (err) {
-        return console.error("ERROR AL ELIMINAR ANUNCIOS"); 
-    }
-    console.log("ELIMINADO ANUNCIOS");
-    // Leo el fichero anuncios.json para inicializar la base de datos
-	fs.readFile("./models/anuncios.json", {encoding:"utf8"}, function(error, data){
-		if(error){
-			console.error("Error al leer el fichero anuncios.json", error);
+	return new Promise(function(resolve, reject) {
+		Anuncio.remove({}, function(err) {
+		    if (err) {
+		    	reject(new Error("ERROR AL ELIMINAR ANUNCIOS"));
+		        return;
+		    }
+		    console.log("ELIMINADO ANUNCIOS");
+		    resolve();
 			return;
-		}
+		});
+	});
+};
 
-		var data = JSON.parse(data);
+//Promesa que borra la base de datos de los anuncios.
+var deleteUsuario = function (){
 
-		//Aqui tengo el fichero leído, ahora guardo lo obtenido
-		//en la base de datos.
+	return new Promise(function(resolve, reject) {
+		Usuario.remove({}, function(err) {
+		    if (err) {
+		    	reject(new Error("ERROR AL ELIMINAR USUARIOS"));
+		        return;
+		    }
+		    console.log("ELIMINADO USUARIOS");
+		    resolve();
+			return;
+		});
+	});
+};
 
-		//Cuidado porque creo que estamos en llamadas asíncronas, al guardar
-		//en la base de datos estamos haciendo algo asíncrono, por tanto utilizo
-		//Un bucle asíncrono de la libreria asyn para intentar guardar en paralelo
-		//todas las cosas que tenga y cuando termine que me avise. Creo...
+var leerFicheroAnuncios = function(){
 
-		var i = 0;
-		for (i = 0; i< data.anuncios.length; i++) {
+	return new Promise(function(resolve, reject) {
+		fs.readFile("./models/anuncios.json", {encoding:"utf8"}, function(error, data){
+			if(error){
+				reject(new Error("Error al leer el fichero anuncios.json", error));
+				return;
+			}
 
-			var new_anuncio = new Anuncio(data.anuncios[i]);
+			var data = JSON.parse(data);
+			console.log("LEIDO FICHERO ANUNCIOS");
+			resolve(data);
+		});
+	});
+};
+
+var leerFicheroUsuarios = function(){
+
+	return new Promise(function(resolve, reject) {
+		fs.readFile("./models/usuarios.json", {encoding:"utf8"}, function(error, data){
+			if(error){
+				reject(new Error("Error al leer el fichero usuario.json", error));
+				return;
+			}
+
+			var data = JSON.parse(data);
+			console.log("LEIDO FICHERO USUARIOS");
+			resolve(data);
+		});
+	});
+};
+	
+var saveAnuncios = function(data){
+	
+	return new Promise(function(resolve, reject) {
+	
+		
+		async.each(data.anuncios, function(data, cb) {
+			var new_anuncio = new Anuncio(data);
 			new_anuncio.save(function(err, newRow){
 		    	if(err){
 		    		//res.json({result:false, err:err});
-		    		console.error("ERROR AL GUARDAR ANUNCIO");
+		    		console.log("ERROR AL GUARDAR ANUNCIO");
+		    		cb();
 		    		return;
 		    	}
 		    	//res.json({result:true, row: newRow});
 		    	console.log("GUARDADO ANUNCIO");
+		    	cb();
 		    });
-		}
-	});
-});
 
-Usuario.remove({}, function(err) {
-    if (err) {
-        return console.error("ERROR AL ELIMINAR USUARIOS"); 
-    }
-    console.log("ELIMINADO USUARIOS");
-    // Leo el fichero usuarios.json para inicializar la base de datos
-	fs.readFile("./models/usuarios.json", {encoding:"utf8"}, function(error, data){
-		if(error){
-			console.error("Error al leer el fichero usuarios.json", error);
-			return;
-		}
 
-		var data = JSON.parse(data);
-
-		//Aqui tengo el fichero leído, ahora guardo lo obtenido
-		//en la base de datos.
-
-		//Cuidado porque creo que estamos en llamadas asíncronas, al guardar
-		//en la base de datos estamos haciendo algo asíncrono, por tanto utilizo
-		//Un bucle asíncrono de la libreria asyn para intentar guardar en paralelo
-		//todas las cosas que tenga y cuando termine que me avise. Creo...
+		}, function(err){
+		    // if any of the file processing produced an error, err would equal that error
+		    if( err ) {
+		      // One of the iterations produced an error.
+		      // All processing will now stop.
+		      console.log("ERROR Al final de async.each");
+		      reject();
+		    } else {
+		      console.log("Finalizado async.each");
+		      resolve(data);
+		    }
+		});
 		
-		var i = 0;
-		for (i = 0; i< data.usuarios.length; i++) {
+	});
 
-			var new_user = new Usuario(data.usuarios[i]);
+};
+
+var saveUsuarios = function(data){
+	
+	return new Promise(function(resolve, reject) {
+	
+		
+		async.each(data.usuarios, function(data, cb) {
+			var new_user = new Usuario(data);
 			new_user.save(function(err, newRow){
 		    	if(err){
 		    		//res.json({result:false, err:err});
 		    		console.error("ERROR AL GUARDAR USUARIOS");
+		    		cb();
 		    		return;
 		    	}
-		    	//res.json({result:true, row: newRow});
-		    	console.log("GUARDADO USUARIO");
+		    	cb();
 		    	
 		    });
-		}
-	});
-});
 
-//process.exit para terminar
-//process.exit(1) lo para recibes que ha habido un error
+
+		}, function(err){
+		    // if any of the file processing produced an error, err would equal that error
+		    if( err ) {
+		      // One of the iterations produced an error.
+		      // All processing will now stop.
+		      console.log("ERROR Al final de async.each");
+		      reject();
+		    } else {
+		      resolve(data);
+		    }
+		});
+		
+	});
+
+};
+
+
+
+deleteAnuncios()
+	.then(leerFicheroAnuncios)
+	.then(saveAnuncios)
+	.then(deleteUsuario)
+	.then(leerFicheroUsuarios)
+	.then(saveUsuarios)
+	
+	.then( function(resultado) {
+		console.log("FIN");
+		process.exit();
+	})
+	.catch( function(error) {
+		console.log("ERROR EN PROMESAS");
+		process.exit(1);
+	});
+
+
